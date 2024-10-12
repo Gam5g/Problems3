@@ -1,38 +1,124 @@
-.App {
+/* 공통 스타일 */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+h1, h2, h4 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.form-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #0e0303;
+  border-radius: 8px;
+  background-color: #e0e3f1;
+  user-select: none;
+}
+
+input[type="text"], input[type="checkbox"] {
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px solid #7974bd;
+  border-radius: 4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th, td {
+  padding: 10px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+th {
+  background-color: #9da2e9;
+  border-bottom: 2px solid #ddd;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+td input[type="text"] {
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.class-button {
+  background-color: #9bc9fa;
   color: white;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  gap : 30px;
+  width : 48%;
+  height : 35px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
-.App-link {
-  color: #61dafb;
+button:hover {
+  background-color: #5882ad;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 300px;
+}
+
+
+.modal h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #333;
+}
+
+.modal ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.modal ul li {
+  margin: 5px 0;
+  font-size: 18px;
+  color: #d47676;
+}
+
+.modal button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: #9bc9fa;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal button:hover {
+  background-color: #5882ad;
 }
