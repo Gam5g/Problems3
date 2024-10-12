@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
-const WAIT_TIME_SECONDS = 10;
+const WAIT_TIME_SECONDS = 40;
 const WAIT_TIME_MS = WAIT_TIME_SECONDS * 1000;
 
 const App = () => {
@@ -217,7 +217,7 @@ const App = () => {
       <h1 style={{ textAlign: "center" }}>역대 기출문제 3장</h1>
       <h4>답안이 공란인 경우 0으로 작성.</h4>
       <h4>대소문자 구별 필수!! 띄어쓰기 있을 경우 오답처리됩니다.</h4>
-      <h4>무분별한 채점 사용을 막기 위해 채점 버튼은 1분간 비활성화됩니다.</h4>
+      <h4>무분별한 채점 사용을 막기 위해 채점 버튼은 40초간 비활성화됩니다.</h4>
       <h4>코드문제인 9번과 12번은 개인카톡으로 주면 채점합니다.</h4>
       <h4>추가 문의는 개인카톡으로 주세요.</h4>
       <form onSubmit={handleSubmit} className="form-container">
