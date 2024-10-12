@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
+
+const WAIT_TIME_SECONDS = 10;
+const WAIT_TIME_MS = WAIT_TIME_SECONDS * 1000;
 
 const App = () => {
   const correctAnswers = {
@@ -39,21 +42,48 @@ const App = () => {
   });
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
+  const [countdown, setCountdown] = useState(WAIT_TIME_SECONDS);
 
+  useEffect(() => {
+    // 페이지 로드 시 로컬 스토리지에서 제한 시간 확인
+    const storedSubmitTime = localStorage.getItem("submitTime");
+    if (storedSubmitTime) {
+      const currentTime = new Date().getTime();
+      const timePassed = currentTime - parseInt(storedSubmitTime, 10);
+
+      if (timePassed < WAIT_TIME_MS) {
+        // 1분이 지나지 않았으면 남은 시간 계산 후 카운트다운 시작
+        const remainingTime = WAIT_TIME_SECONDS - Math.floor(timePassed / 1000);
+        setCountdown(remainingTime);
+        setIsSubmitDisabled(true);
+
+        const interval = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev <= 1) {
+              clearInterval(interval);
+              setIsSubmitDisabled(false);
+              localStorage.removeItem("submitTime");
+              return WAIT_TIME_SECONDS;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      } else {
+        localStorage.removeItem("submitTime");
+      }
+    }
+  }, []);
   const handleInputChange = (e, questionKey, index = null, subKey = null) => {
     const newInputs = { ...userInputs };
 
     if (questionKey === "question8") {
-      // question8의 입력 처리
       if (subKey) {
-        // front 또는 rear 변경 시
         newInputs[questionKey][subKey] = e.target.value;
       } else if (index !== null) {
-        // inputs 배열의 특정 값 변경 시
         newInputs[questionKey].inputs[index] = e.target.value;
       }
     } else {
-      // 그 외의 질문 처리
       if (index !== null) {
         newInputs[questionKey][index] = e.target.value;
       } else {
@@ -164,16 +194,32 @@ const App = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setIsSubmitDisabled(true);
+    const submitTime = new Date().getTime();
+    localStorage.setItem("submitTime", submitTime);
+    setCountdown(WAIT_TIME_SECONDS);
+
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setIsSubmitDisabled(false);
+          localStorage.removeItem("submitTime");
+          return WAIT_TIME_SECONDS;
+        }
+        return prev - 1;
+      });
+    }, 1000);
   };
 
   return (
     <div>
       <h1 style={{ textAlign: "center" }}>역대 기출문제 3장</h1>
-      <h3 style={{ textAlign: "center" }}>답안이 공란인 경우 0으로 작성.</h3>
-      <h3 style={{ textAlign: "center" }}>
-        대소문자 구별 필수!! 띄어쓰기 있을 경우 오답처리됩니다.
-      </h3>
-      <h3 style={{ textAlign: "center" }}>9번과 12번은 개인카톡으로 주세요.</h3>
+      <h4>답안이 공란인 경우 0으로 작성.</h4>
+      <h4>대소문자 구별 필수!! 띄어쓰기 있을 경우 오답처리됩니다.</h4>
+      <h4>무분별한 채점 사용을 막기 위해 채점 버튼은 1분간 비활성화됩니다.</h4>
+      <h4>코드문제인 9번과 12번은 개인카톡으로 주면 채점합니다.</h4>
+      <h4>추가 문의는 개인카톡으로 주세요.</h4>
       <form onSubmit={handleSubmit} className="form-container">
         <h2>문제 1</h2>
         <table>
@@ -199,7 +245,6 @@ const App = () => {
           </tbody>
         </table>
 
-        {/* 문제 2 */}
         <h2>문제 2</h2>
         <table>
           <thead>
@@ -226,7 +271,6 @@ const App = () => {
           </tbody>
         </table>
 
-        {/* 문제 3 */}
         <h2>문제 3</h2>
         <table>
           <thead>
@@ -433,8 +477,12 @@ const App = () => {
           />
         </div>
 
-        <button type="submit" className="class-button">
-          채점
+        <button
+          type="submit"
+          className="class-button"
+          disabled={isSubmitDisabled}
+        >
+          {isSubmitDisabled ? `제출 불가(${countdown}초 남음)` : "채점"}
         </button>
         <button
           type="button"
@@ -446,7 +494,6 @@ const App = () => {
         </button>
       </form>
 
-      {/* 모달 창 */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal">
