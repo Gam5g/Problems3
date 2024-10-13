@@ -20,7 +20,7 @@ const App = () => {
     },
     question10: ["*", "(", "/", "(", "-", "*", "0", "0", "0", "0", "0"],
     question11: "22",
-    question13: "ABC,ACB,BAC,BCA,CBA",
+    question13: "ABC,ACB,BCA,CAB,CBA",
     question25: [3, 5],
     finalAnswer: "2,3",
   };
@@ -220,6 +220,9 @@ const App = () => {
       <h4>무분별한 채점 사용을 막기 위해 채점 버튼은 40초간 비활성화됩니다.</h4>
       <h4>코드문제인 9번과 12번은 개인카톡으로 주면 채점합니다.</h4>
       <h4>추가 문의는 개인카톡으로 주세요.</h4>
+      <h4 style={{ color: "blue" }}>
+        (10.13) 문제 13번 답안을 문제에 맞게 수정함
+      </h4>
       <form onSubmit={handleSubmit} className="form-container">
         <h2>문제 1</h2>
         <table>
@@ -437,7 +440,8 @@ const App = () => {
         />
         {/* 문제 13 */}
         <h2>문제 13 </h2>
-        <h4>"대문자로만 작성, 알파벳순, 콤마구분 예시:ABC,ACB"</h4>
+        <h4>대문자로만 작성, 알파벳순, 콤마구분 예시:ABC,ACB</h4>
+        <h4>문자열에서 오른쪽 문자가 제일 먼저 도착하는 차임.</h4>
         <input
           type="text"
           placeholder="정답 입력 (콤마로 구분, 알파벳 순, 띄어쓰기, 소문자 금지)"
