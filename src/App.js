@@ -313,6 +313,7 @@ const App = () => {
               value={userInputs.question4[0] || ""}
               onChange={(e) => handleInputChange(e, "question4", 0)}
               style={{ width: "80%" }}
+              placeholder="띄어쓰기 없이 작성"
             />
           </div>
           <div style={{ flex: 1 }}>
@@ -322,6 +323,7 @@ const App = () => {
               value={userInputs.question4[1] || ""}
               onChange={(e) => handleInputChange(e, "question4", 1)}
               style={{ width: "80%" }}
+              placeholder="띄어쓰기 없이 작성"
             />
           </div>
         </div>
@@ -465,7 +467,7 @@ const App = () => {
                 onChange={(e) => handleCheckboxChange(e, i + 1)}
                 style={{ marginRight: "5px" }}
               />
-              {["①", "②", "③", "④", "⑤"][i]}
+              {["① 15423", "② 52341", "③ 32541", "④ 41325", "⑤ 24531"][i]}
             </label>
           ))}
         </div>
