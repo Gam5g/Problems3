@@ -1,59 +1,122 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
-const WAIT_TIME_SECONDS = 40;
+const WAIT_TIME_SECONDS = 3;
 const WAIT_TIME_MS = WAIT_TIME_SECONDS * 1000;
 
 const App = () => {
   const correctAnswers = {
-    question1: ["27", "4", "8", "5", "0"],
-    question2: ["+", "(", "+", "/", "(", "-", "0", "0", "0", "0", "0"],
-    question3: ["23", "3", "3", "5", "0"],
-    question4: ["top>=MaxSize", "top++"],
-    question5: "8",
-    question6: "2",
-    question7: "abcd-e**+",
-    question8: {
-      inputs: ["F", "0", "0", "0", "D", "E"],
-      front: "3",
-      rear: "0",
-    },
-    question10: ["*", "(", "/", "(", "-", "*", "0", "0", "0", "0", "0"],
-    question11: "22",
-    question13: "ABC,ACB,BCA,CAB,CBA",
-    question25: [3, 5],
-    finalAnswer: "2,3",
+    question1: "ACBDEHFGI",
+    question2: "14",
+    question3: [
+      [
+        "!first&&!second",
+        "first==NULL&&second==NULL",
+        "!first&&second==NULL",
+        "first==NULL&&!second",
+        "!second&&!first",
+        "second==NULL&&first==NULL",
+        "second==NULL&&!first",
+        "!second&&first==NULL",
+      ],
+      "equals(first->left_child,second->left_child)",
+      "equals(first->right_child,second->right_child)",
+    ],
+    question4: "2^(k-1)<=n<=2^k-1",
+    question5: "CFHGDBEA",
+    question6: "BFEJHD",
+    question7: "8",
+    question10: [
+      "swap(original->rchild)",
+      "swap(original->lchild)",
+      "original->data",
+    ],
+    question11: "k,2^k-1",
+    question13: [
+      ["ptr==NULL", "!ptr", "(ptr)==NULL"],
+      "1+count(ptr->lchild)+count(ptr->rchild)",
+    ],
+    question15: ["k,2^k-1", "1,2^(i-1)"],
+    question16: ["5", "3", "4", "2", "1", "0", "0", "0"],
+    question17: ["returnptr", "returnFindMax(ptr->rchild)"],
+    question18: [["2^h-1-h", "2^h-h-1"], "-1"],
+    question19: ["tree_depth(ptr->lchild)", "tree_depth(ptr->rchild)"],
+    question20: "ADECBHG",
+    question21: ["1023", "2"],
+    question22: "BCEFDA",
+    question23: "25",
+    question24: ["3", "4"],
+    question25: [
+      [
+        "(ptr->lchild)!=NULL&&(ptr->rchild)!=NULL",
+        "(ptr->lchild)&&(ptr->rchild)",
+        "(ptr->lchild)&&(ptr->rchild)!=NULL",
+        "(ptr->lchild)!=NULL&&(ptr->rchild)",
+        "ptr->lchild!=NULL&&ptr->rchild!=NULL",
+        "ptr->lchild&&ptr->rchild",
+        "ptr->lchild&&ptr->rchild!=NULL",
+        "ptr->lchild!=NULL&&ptr->rchild",
+        "ptr->lchild!=NULL&&(ptr->rchild)!=NULL",
+        "ptr->lchild&&(ptr->rchild)",
+        "ptr->lchild&&(ptr->rchild)!=NULL",
+        "ptr->lchild!=NULL&&(ptr->rchild)",
+        "(ptr->lchild)!=NULL&&ptr->rchild!=NULL",
+        "(ptr->lchild)&&ptr->rchild",
+        "(ptr->lchild)&&ptr->rchild!=NULL",
+        "(ptr->lchild)!=NULL&&ptr->rchild",
+      ],
+      "1+count_node2(ptr->lchild)+count_node2(ptr->rchild)",
+    ],
+    question29: [
+      'printf("%d",root->data)',
+      'printf("%d",root->data)ancestor(root->rchild,data)',
+      'printf("%d",root->data)ancestor(root->lchild,data)',
+    ],
+    question32: [
+      ["ptr->lchild==NULL", "!ptr->lchild", "(ptr->lchild)==NULL"],
+      ["ptr->rchild==NULL", "!ptr->rchild", "(ptr->rchild)==NULL"],
+    ],
   };
 
   const [userInputs, setUserInputs] = useState({
-    question1: [],
-    question2: [],
-    question3: [],
-    question4: [],
+    question1: "",
+    question2: "",
+    question3: ["", "", ""],
+    question4: "",
     question5: "",
     question6: "",
     question7: "",
-    question8: { inputs: [], front: "", rear: "" },
-    question10: [],
+    question10: ["", "", ""],
     question11: "",
-    question13: [],
-    question25: [],
-    finalAnswer: [],
+    question13: ["", ""],
+    question15: ["", ""],
+    question16: Array(8).fill(""),
+    question17: ["", ""],
+    question18: ["", ""],
+    question19: ["", ""],
+    question20: "",
+    question21: ["", ""],
+    question22: "",
+    question23: "",
+    question24: ["", ""],
+    question25: ["", ""],
+    question26: "",
+    question29: ["", "", ""],
+    question32: ["", ""],
   });
+
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
   const [countdown, setCountdown] = useState(WAIT_TIME_SECONDS);
 
   useEffect(() => {
-    // 페이지 로드 시 로컬 스토리지에서 제한 시간 확인
     const storedSubmitTime = localStorage.getItem("submitTime");
     if (storedSubmitTime) {
       const currentTime = new Date().getTime();
       const timePassed = currentTime - parseInt(storedSubmitTime, 10);
 
       if (timePassed < WAIT_TIME_MS) {
-        // 1분이 지나지 않았으면 남은 시간 계산 후 카운트다운 시작
         const remainingTime = WAIT_TIME_SECONDS - Math.floor(timePassed / 1000);
         setCountdown(remainingTime);
         setIsSubmitDisabled(true);
@@ -74,100 +137,66 @@ const App = () => {
       }
     }
   }, []);
-  const handleInputChange = (e, questionKey, index = null, subKey = null) => {
-    const newInputs = { ...userInputs };
 
-    if (questionKey === "question8") {
-      if (subKey) {
-        newInputs[questionKey][subKey] = e.target.value;
-      } else if (index !== null) {
-        newInputs[questionKey].inputs[index] = e.target.value;
-      }
-    } else {
-      if (index !== null) {
-        newInputs[questionKey][index] = e.target.value;
-      } else {
-        newInputs[questionKey] = e.target.value;
-      }
+  const checkAnswer = (userAnswer, correctAnswer) => {
+    if (Array.isArray(correctAnswer)) {
+      return correctAnswer.some((possibleAnswer) =>
+        Array.isArray(possibleAnswer)
+          ? JSON.stringify(possibleAnswer) === JSON.stringify(userAnswer)
+          : possibleAnswer === userAnswer
+      );
     }
-
-    setUserInputs(newInputs);
-  };
-
-  const handleCheckboxChange = (e, index) => {
-    const checked = e.target.checked;
-    const selectedAnswers = [...userInputs.question25];
-    if (checked) {
-      selectedAnswers.push(index);
-    } else {
-      const answerIndex = selectedAnswers.indexOf(index);
-      if (answerIndex > -1) {
-        selectedAnswers.splice(answerIndex, 1);
-      }
-    }
-    setUserInputs({ ...userInputs, question25: selectedAnswers });
+    return userAnswer === correctAnswer;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const wrongAnswers = [];
 
-    if (
-      JSON.stringify(userInputs.question1) !==
-      JSON.stringify(correctAnswers.question1)
-    )
-      wrongAnswers.push("문제 1");
+    const questions = [
+      { key: "question1", label: "문제 1" },
+      { key: "question2", label: "문제 2" },
+      { key: "question3", label: "문제 3", isArray: true },
+      { key: "question4", label: "문제 4" },
+      { key: "question5", label: "문제 5" },
+      { key: "question6", label: "문제 6" },
+      { key: "question7", label: "문제 7" },
+      { key: "question10", label: "문제 10", isArray: true },
+      { key: "question11", label: "문제 11" },
+      { key: "question13", label: "문제 13", isArray: true },
+      { key: "question15", label: "문제 15", isObject: true },
+      { key: "question16", label: "문제 16", isArray: true },
+      { key: "question17", label: "문제 17", isArray: true },
+      { key: "question18", label: "문제 18", isArray: true },
+      { key: "question19", label: "문제 19", isArray: true },
+      { key: "question20", label: "문제 20" },
+      { key: "question21", label: "문제 21", isArray: true },
+      { key: "question22", label: "문제 22" },
+      { key: "question23", label: "문제 23" },
+      { key: "question24", label: "문제 24", isArray: true },
+      { key: "question25", label: "문제 25", isArray: true },
+      { key: "question29", label: "문제 29", isArray: true },
+      { key: "question32", label: "문제 32", isArray: true },
+    ];
 
-    if (
-      JSON.stringify(userInputs.question2) !==
-      JSON.stringify(correctAnswers.question2)
-    )
-      wrongAnswers.push("문제 2");
+    questions.forEach(({ key, label, isArray, isObject }) => {
+      const userAnswer = userInputs[key];
+      const correctAnswer = correctAnswers[key];
 
-    if (
-      JSON.stringify(userInputs.question3) !==
-      JSON.stringify(correctAnswers.question3)
-    )
-      wrongAnswers.push("문제 3");
-    if (
-      userInputs.question4[0] !== correctAnswers.question4[0] ||
-      userInputs.question4[1] !== correctAnswers.question4[1]
-    )
-      wrongAnswers.push("문제 4");
-    if (userInputs.question5 !== correctAnswers.question5)
-      wrongAnswers.push("문제 5");
-    if (userInputs.question6 !== correctAnswers.question6)
-      wrongAnswers.push("문제 6");
-    if (userInputs.question7 !== correctAnswers.question7)
-      wrongAnswers.push("문제 7");
-
-    if (
-      JSON.stringify(userInputs.question8.inputs) !==
-        JSON.stringify(correctAnswers.question8.inputs) ||
-      userInputs.question8.front !== correctAnswers.question8.front ||
-      userInputs.question8.rear !== correctAnswers.question8.rear
-    )
-      wrongAnswers.push("문제 8");
-
-    if (
-      JSON.stringify(userInputs.question10) !==
-      JSON.stringify(correctAnswers.question10)
-    )
-      wrongAnswers.push("문제 10");
-
-    if (userInputs.question11 !== correctAnswers.question11)
-      wrongAnswers.push("문제 11");
-
-    if (userInputs.question13 !== correctAnswers.question13)
-      wrongAnswers.push("문제 13");
-    if (
-      JSON.stringify(userInputs.question25.sort()) !==
-      JSON.stringify(correctAnswers.question25.sort())
-    )
-      wrongAnswers.push("문제 25");
-
-    if (userInputs.finalAnswer !== correctAnswers.finalAnswer)
-      wrongAnswers.push("마지막 문제 4번");
+      if (isObject) {
+        const isCorrect =
+          checkAnswer(userAnswer.min, correctAnswer.min) &&
+          checkAnswer(userAnswer.max, correctAnswer.max);
+        if (!isCorrect) wrongAnswers.push(label);
+      } else if (isArray) {
+        const isCorrect = userAnswer.every((answer, i) =>
+          checkAnswer(answer, correctAnswer[i])
+        );
+        if (!isCorrect) wrongAnswers.push(label);
+      } else if (!checkAnswer(userAnswer, correctAnswer)) {
+        wrongAnswers.push(label);
+      }
+    });
 
     setIncorrectAnswers(wrongAnswers);
     setIsModalOpen(true);
@@ -175,21 +204,45 @@ const App = () => {
 
   const handleClear = () => {
     setUserInputs({
-      question1: [],
-      question2: [],
-      question3: [],
-      question4: [],
+      question1: "",
+      question2: "",
+      question3: ["", "", ""],
+      question4: "",
       question5: "",
       question6: "",
       question7: "",
-      question8: { inputs: [], front: "", rear: "" },
-      question10: [],
+      question10: ["", "", ""],
       question11: "",
-      question13: [],
-      question25: [],
-      finalAnswer: [],
+      question13: ["", ""],
+      question15: { min: ["", ""], max: ["", ""] },
+      question16: Array(8).fill(""),
+      question17: ["", ""],
+      question18: ["", ""],
+      question19: ["", ""],
+      question20: "",
+      question21: ["", ""],
+      question22: "",
+      question23: "",
+      question24: ["", ""],
+      question25: ["", ""],
+      question29: ["", "", ""],
+      question32: ["", ""],
     });
     setIncorrectAnswers([]);
+  };
+
+  const handleInputChange = (e, questionKey, index = null, subKey = null) => {
+    setUserInputs((prevInputs) => {
+      const newInputs = { ...prevInputs };
+      if (subKey) {
+        newInputs[questionKey][subKey][index] = e.target.value;
+      } else if (index !== null) {
+        newInputs[questionKey][index] = e.target.value;
+      } else {
+        newInputs[questionKey] = e.target.value;
+      }
+      return newInputs;
+    });
   };
 
   const closeModal = () => {
@@ -214,274 +267,281 @@ const App = () => {
 
   return (
     <div>
-      <h1 style={{ textAlign: "center" }}>역대 기출문제 3장</h1>
-      <h4>답안이 공란인 경우 0으로 작성.</h4>
-      <h4>대소문자 구별 필수!! 띄어쓰기 있을 경우 오답처리됩니다.</h4>
+      <h1 style={{ textAlign: "center" }}>역대 기출문제 5장</h1>
+      <h4>아래의 파란색 문구를 잘 읽기 바랍니다.</h4>
       <h4>무분별한 채점 사용을 막기 위해 채점 버튼은 40초간 비활성화됩니다.</h4>
-      <h4>코드문제인 9번과 12번은 개인카톡으로 주면 채점합니다.</h4>
+      <h4>
+        코드문제 8번, 9번, 12번, 마지막 3번은 개인카톡으로 주면 채점합니다.
+      </h4>
       <h4>추가 문의는 개인카톡으로 주세요.</h4>
       <h4 style={{ color: "blue" }}>
-        (10.13) 문제 13번 답안을 문제에 맞게 수정함
+        대소문자 잘 보면서 기입하세요. 띄어쓰기 있을 경우 오답처리됩니다.
       </h4>
+      <h4 style={{ color: "blue" }}>
+        제곱의 경우 ^ 기호(shift+6)으로 사용, "null"이 아니라 "NULL"입니다.
+      </h4>
+      <h4 style={{ color: "blue" }}>답안이 공란인 경우 0으로 작성합니다.</h4>
       <form onSubmit={handleSubmit} className="form-container">
         <h2>문제 1</h2>
-        <table>
-          <thead>
-            <tr>
-              {["0", "1", "2", "3", "4"].map((num, idx) => (
-                <th key={idx}>{num}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              {Array.from({ length: 5 }, (_, i) => (
-                <td key={i}>
-                  <input
-                    type="text"
-                    value={userInputs.question1[i] || ""}
-                    onChange={(e) => handleInputChange(e, "question1", i)}
-                  />
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
+        <h4>ABCDEFGHIJK와 같이 대문자, 띄어쓰기 없이 기입</h4>
+        <input
+          type="text"
+          value={userInputs.question1}
+          onChange={(e) => handleInputChange(e, "question1")}
+        />
 
         <h2>문제 2</h2>
-        <table>
-          <thead>
-            <tr>
-              {["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map(
-                (num, idx) => (
-                  <th key={idx}>{num}</th>
-                )
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              {Array.from({ length: 11 }, (_, i) => (
-                <td key={i}>
-                  <input
-                    type="text"
-                    value={userInputs.question2[i] || ""}
-                    onChange={(e) => handleInputChange(e, "question2", i)}
-                  />
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
+        <input
+          type="text"
+          value={userInputs.question2}
+          onChange={(e) => handleInputChange(e, "question2")}
+        />
 
         <h2>문제 3</h2>
-        <table>
-          <thead>
-            <tr>
-              {["0", "1", "2", "3", "4"].map((num, idx) => (
-                <th key={idx}>{num}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              {Array.from({ length: 5 }, (_, i) => (
-                <td key={i}>
-                  <input
-                    type="text"
-                    value={userInputs.question3[i] || ""}
-                    onChange={(e) => handleInputChange(e, "question3", i)}
-                  />
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
+        {["가", "나", "다"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              placeholder="띄어쓰기 금지, 괄호 없이 기입"
+              value={userInputs.question3[i]}
+              onChange={(e) => handleInputChange(e, "question3", i)}
+            />
+          </div>
+        ))}
+
         <h2>문제 4</h2>
-        <h4>MaxSize, top 형태로 대소문자 구분해서 작성</h4>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "20px",
-          }}
-        >
-          <div style={{ flex: 1 }}>
-            <label>A:</label>
-            <input
-              type="text"
-              value={userInputs.question4[0] || ""}
-              onChange={(e) => handleInputChange(e, "question4", 0)}
-              style={{ width: "80%" }}
-              placeholder="띄어쓰기 없이 작성"
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <label>B:</label>
-            <input
-              type="text"
-              value={userInputs.question4[1] || ""}
-              onChange={(e) => handleInputChange(e, "question4", 1)}
-              style={{ width: "80%" }}
-              placeholder="띄어쓰기 없이 작성"
-            />
-          </div>
-        </div>
+        <h4>다음의 식 구성으로 만들 것 : a^(b-c)＜=n＜=d^e-f</h4>
+        <input
+          type="text"
+          value={userInputs.question4}
+          placeholder="다음의 식 구성으로 만들 것 : a^(b-c)<=n<=d^e-f"
+          onChange={(e) => handleInputChange(e, "question4")}
+        />
 
         <h2>문제 5</h2>
-        <div style={{ marginBottom: "20px" }}>
-          <input
-            type="text"
-            value={userInputs.question5 || ""}
-            onChange={(e) => handleInputChange(e, "question5")}
-            style={{ width: "100%" }}
-          />
-        </div>
+        <h4>ABCDEFGHIJK와 같이 대문자, 띄어쓰기 없이 기입</h4>
+        <input
+          type="text"
+          value={userInputs.question5}
+          onChange={(e) => handleInputChange(e, "question5")}
+        />
 
         <h2>문제 6</h2>
-        <div style={{ marginBottom: "20px" }}>
-          <input
-            type="text"
-            value={userInputs.question6 || ""}
-            onChange={(e) => handleInputChange(e, "question6")}
-            style={{ width: "100%" }}
-          />
-        </div>
+        <h4>ABCDEFGHIJK와 같이 대문자, 띄어쓰기 없이 기입</h4>
+        <input
+          type="text"
+          value={userInputs.question6}
+          onChange={(e) => handleInputChange(e, "question6")}
+        />
 
         <h2>문제 7</h2>
-        <div style={{ marginBottom: "20px" }}>
-          <input
-            type="text"
-            value={userInputs.question7 || ""}
-            onChange={(e) => handleInputChange(e, "question7")}
-            style={{ width: "100%" }}
-          />
-        </div>
+        <input
+          type="text"
+          value={userInputs.question7}
+          onChange={(e) => handleInputChange(e, "question7")}
+        />
 
-        <h2>문제 8</h2>
-        <h4>대문자 또는 숫자만 작성</h4>
-        <table>
-          <thead>
-            <tr>
-              {["0", "1", "2", "3", "4", "5"].map((num, idx) => (
-                <th key={idx}>{num}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              {Array.from({ length: 6 }, (_, i) => (
-                <td key={i}>
-                  <input
-                    type="text"
-                    value={userInputs.question8.inputs[i] || ""}
-                    onChange={(e) => handleInputChange(e, "question8", i)}
-                  />
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "10px",
-          }}
-        >
-          <div>
-            <label>Front: </label>
-            <input
-              type="text"
-              value={userInputs.question8.front || ""}
-              onChange={(e) => handleInputChange(e, "question8", null, "front")}
-              style={{ width: "100px" }}
-            />
-          </div>
-          <div>
-            <label>Rear: </label>
-            <input
-              type="text"
-              value={userInputs.question8.rear || ""}
-              onChange={(e) => handleInputChange(e, "question8", null, "rear")}
-              style={{ width: "100px" }}
-            />
-          </div>
-        </div>
-        {/* 문제 10 */}
         <h2>문제 10</h2>
+        {["가", "나", "다"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              value={userInputs.question10[i]}
+              placeholder="띄어쓰기 금지"
+              onChange={(e) => handleInputChange(e, "question10", i)}
+            />
+          </div>
+        ))}
+
+        <h2>문제 11</h2>
+        <h4>루트노드의 깊이는 1로 합니다.</h4>
+        <input
+          type="text"
+          value={userInputs.question11}
+          placeholder="콤마(쉼표로 구분), 띄어쓰기 금지"
+          onChange={(e) => handleInputChange(e, "question11")}
+        />
+
+        <h2>문제 13</h2>
+        {["가", "나"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              value={userInputs.question13[i]}
+              onChange={(e) => handleInputChange(e, "question13", i)}
+            />
+          </div>
+        ))}
+
+        <h2>문제 15</h2>
+        <h4>루트노드의 깊이는 1로 합니다.</h4>
+        {["가", "나"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              value={userInputs.question15[i]}
+              placeholder="최솟값,최댓값 형태로 작성, ^기호 사용"
+              onChange={(e) => handleInputChange(e, "question15", i)}
+            />
+          </div>
+        ))}
+
+        <h2>문제 16</h2>
         <table>
           <thead>
             <tr>
-              {Array.from({ length: 11 }, (_, i) => (
-                <th key={i}>{i}</th>
+              {[...Array(8).keys()].map((num) => (
+                <th key={num}>{num}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             <tr>
-              {Array.from({ length: 11 }, (_, i) => (
+              {Array.from({ length: 8 }, (_, i) => (
                 <td key={i}>
                   <input
                     type="text"
-                    value={userInputs.question10[i] || ""}
-                    onChange={(e) => handleInputChange(e, "question10", i)}
+                    value={userInputs.question16[i]}
+                    onChange={(e) => handleInputChange(e, "question16", i)}
                   />
                 </td>
               ))}
             </tr>
           </tbody>
         </table>
-        {/* 문제 11 */}
-        <h2>문제 11</h2>
-        <input
-          type="text"
-          value={userInputs.question11 || ""}
-          onChange={(e) => handleInputChange(e, "question11")}
-          style={{ width: "100%" }}
-        />
-        {/* 문제 13 */}
-        <h2>문제 13 </h2>
-        <h4>대문자로만 작성, 알파벳순, 콤마구분 예시:ABC,ACB</h4>
-        <h4>문자열에서 오른쪽 문자가 제일 먼저 도착하는 차임.</h4>
-        <input
-          type="text"
-          placeholder="정답 입력 (콤마로 구분, 알파벳 순, 띄어쓰기, 소문자 금지)"
-          value={userInputs.question13 || ""}
-          onChange={(e) => handleInputChange(e, "question13")}
-          style={{ width: "100%" }}
-        />
-        <h2>문제 25</h2>
-        <div
-          style={{
-            marginBottom: "20px",
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          {Array.from({ length: 5 }, (_, i) => (
-            <label key={i} style={{ display: "flex", alignItems: "center" }}>
-              <input
-                type="checkbox"
-                checked={userInputs.question25.includes(i + 1)}
-                onChange={(e) => handleCheckboxChange(e, i + 1)}
-                style={{ marginRight: "5px" }}
-              />
-              {["① 15423", "② 52341", "③ 32541", "④ 41325", "⑤ 24531"][i]}
-            </label>
-          ))}
-        </div>
 
-        <h2>마지막 문제 4번</h2>
-        <div style={{ marginBottom: "20px" }}>
-          <input
-            type="text"
-            placeholder="정답 입력 (콤마로 구분)"
-            value={userInputs.finalAnswer || ""}
-            onChange={(e) => handleInputChange(e, "finalAnswer")}
-            style={{ width: "100%" }}
-          />
-        </div>
+        <h2>문제 17</h2>
+        <h4>대소문자 구분, 띄어쓰기 금지</h4>
+        {["가", "나"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              value={userInputs.question17[i]}
+              placeholder="띄어쓰기 금지"
+              onChange={(e) => handleInputChange(e, "question17", i)}
+            />
+          </div>
+        ))}
+
+        <h2>문제 18</h2>
+        {["①", "②"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              value={userInputs.question18[i]}
+              onChange={(e) => handleInputChange(e, "question18", i)}
+            />
+          </div>
+        ))}
+
+        <h2>문제 19</h2>
+        {["가", "나"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              placeholder="띄어쓰기 금지"
+              value={userInputs.question19[i]}
+              onChange={(e) => handleInputChange(e, "question19", i)}
+            />
+          </div>
+        ))}
+
+        <h2>문제 20</h2>
+        <h4>ABCDEFGHIJK와 같이 대문자, 띄어쓰기 없이 기입</h4>
+        <input
+          type="text"
+          value={userInputs.question20}
+          onChange={(e) => handleInputChange(e, "question20")}
+        />
+
+        <h2>문제 21</h2>
+        {["①", "②"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              value={userInputs.question21[i]}
+              placeholder="숫자만 작성"
+              onChange={(e) => handleInputChange(e, "question21", i)}
+            />
+          </div>
+        ))}
+
+        <h2>문제 22</h2>
+        <h4>ABCDEFGHIJK와 같이 대문자, 띄어쓰기 없이 기입</h4>
+        <input
+          type="text"
+          value={userInputs.question22}
+          onChange={(e) => handleInputChange(e, "question22")}
+        />
+
+        <h2>문제 23</h2>
+        <input
+          type="text"
+          value={userInputs.question23}
+          placeholder="숫자만 작성"
+          onChange={(e) => handleInputChange(e, "question23")}
+        />
+
+        <h2>문제 24</h2>
+        {["①", "②"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              value={userInputs.question24[i]}
+              onChange={(e) => handleInputChange(e, "question24", i)}
+            />
+          </div>
+        ))}
+
+        <h2>문제 25</h2>
+        {["가", "나"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              value={userInputs.question25[i]}
+              placeholder="띄어쓰기 금지"
+              onChange={(e) => handleInputChange(e, "question25", i)}
+            />
+          </div>
+        ))}
+
+        <h2>문제 29</h2>
+        <h4>세미쿨론 없이 코드 붙여서 사용하세요</h4>
+        <h4>예시 : while(true)printf("helloworld")</h4>
+        {["가", "나", "다"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              value={userInputs.question29[i]}
+              placeholder="띄어쓰기 금지"
+              onChange={(e) => handleInputChange(e, "question29", i)}
+            />
+          </div>
+        ))}
+
+        <h2>문제 32</h2>
+        {["가", "나"].map((label, i) => (
+          <div key={i}>
+            <label>{label}: </label>
+            <input
+              type="text"
+              value={userInputs.question32[i]}
+              placeholder="띄어쓰기 금지"
+              onChange={(e) => handleInputChange(e, "question32", i)}
+            />
+          </div>
+        ))}
 
         <button
           type="submit"
