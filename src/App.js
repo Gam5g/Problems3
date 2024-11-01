@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
-const WAIT_TIME_SECONDS = 3;
+const WAIT_TIME_SECONDS = 40;
 const WAIT_TIME_MS = WAIT_TIME_SECONDS * 1000;
 
 const App = () => {
