@@ -37,7 +37,7 @@ const App = () => {
       "1+count(ptr->lchild)+count(ptr->rchild)",
     ],
     question15: ["k,2^k-1", "1,2^(i-1)"],
-    question16: ["5", "3", "4", "2", "1", "0", "0", "0"],
+    question16: ["0", "5", "3", "4", "2", "1", "0", "0"],
     question17: ["returnptr", "returnFindMax(ptr->rchild)"],
     question18: [["2^h-1-h", "2^h-h-1"], "-1"],
     question19: ["tree_depth(ptr->lchild)", "tree_depth(ptr->rchild)"],
