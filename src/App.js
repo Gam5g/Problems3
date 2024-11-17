@@ -503,6 +503,7 @@ const App = () => {
         ))}
 
         <h2>문제 25</h2>
+        <h4>(나)의 경우 정수를 맨 앞에 적어주세요.</h4>
         {["가", "나"].map((label, i) => (
           <div key={i}>
             <label>{label}: </label>
