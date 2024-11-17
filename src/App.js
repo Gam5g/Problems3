@@ -23,7 +23,7 @@ const App = () => {
       "equals(first->right_child,second->right_child)",
     ],
     question4: "2^(k-1)<=n<=2^k-1",
-    question5: "CFHGDBEA",
+    question5: "ABCDEFGH",
     question6: "BFEJHD",
     question7: "8",
     question10: [
